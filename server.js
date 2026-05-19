@@ -262,8 +262,8 @@ app.post('/api/auto/run', async (req, res) => {
     const settings = loadSettings();
 
     // Only Pinterest + Amazon credentials are required — Gemini is optional
-    if (!settings.pinterest?.email || !settings.pinterest?.password) {
-      return res.status(400).json({ success: false, error: 'Pinterest credentials not configured. Go to Settings.' });
+    if ((!settings.pinterest?.email || !settings.pinterest?.password) && !settings.pinterest?.sessionCookie) {
+      return res.status(400).json({ success: false, error: 'Pinterest credentials (or session cookie) not configured. Go to Settings.' });
     }
     if (!settings.amazon?.partnerTag) {
       return res.status(400).json({ success: false, error: 'Amazon Associate Tag not configured. Go to Settings.' });

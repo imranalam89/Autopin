@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Amazon Affiliate to Pinterest Auto Poster — Search products, generate pin images, and auto-post to Pinterest.">
+  <title>Pinterest Auto Post — Amazon Affiliate Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="url(#logoGrad)" stroke-width="2"/>
+              <path d="M12 7C9.24 7 7 9.24 7 12C7 14.05 8.23 15.81 10 16.58V17.5C10 17.78 10.22 18 10.5 18H13.5C13.78 18 14 17.78 14 17.5V16.58C15.77 15.81 17 14.05 17 12C17 9.24 14.76 7 12 7Z" fill="url(#logoGrad)"/>
+              <defs>
+                <linearGradient id="logoGrad" x1="0" y1="0" x2="24" y2="24">
+                  <stop offset="0%" stop-color="#7c3aed"/>
+                  <stop offset="100%" stop-color="#06b6d4"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <span class="logo-text">PinPost<span class="logo-accent">AI</span></span>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <button class="nav-btn active" data-tab="search" id="nav-search">
+          <span class="nav-icon">🔍</span>
+          <span class="nav-label">Search</span>
+        </button>
+        <button class="nav-btn" data-tab="generate" id="nav-generate">
+          <span class="nav-icon">🎨</span>
+          <span class="nav-label">Generate</span>
+        </button>
+        <button class="nav-btn" data-tab="post" id="nav-post">
+          <span class="nav-icon">📌</span>
+          <span class="nav-label">Post</span>
+        </button>
+        <button class="nav-btn nav-btn-auto" data-tab="auto" id="nav-auto">
+          <span class="nav-icon">🤖</span>
+          <span class="nav-label">Auto Mode</span>
+        </button>
+        <button class="nav-btn" data-tab="settings" id="nav-settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator" id="step-indicator">
+      <div class="step active" data-step="1">
+        <div class="step-dot">1</div>
+        <span class="step-label">Search</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2">
+        <div class="step-dot">2</div>
+        <span class="step-label">Generate</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3">
+        <div class="step-dot">3</div>
+        <span class="step-label">Post to Pinterest</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- ==================== SEARCH TAB ==================== -->
+      <section class="tab-content active" id="tab-search">
+        <div class="tab-header">
+          <h1>Search Amazon Products</h1>
+          <p class="tab-subtitle">Find products to promote with your affiliate link</p>
+        </div>
+
+        <div class="search-bar">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" id="search-input" placeholder="Search for products..." autocomplete="off">
+            <select id="search-category" class="category-select">
+              <option value="All">All Categories</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Books">Books</option>
+              <option value="Fashion">Fashion</option>
+              <option value="HomeAndKitchen">Home & Kitchen</option>
+              <option value="Beauty">Beauty</option>
+              <option value="Sports">Sports</option>
+              <option value="Toys">Toys</option>
+              <option value="Garden">Garden</option>
+              <option value="HealthPersonalCare">Health</option>
+              <option value="Automotive">Automotive</option>
+              <option value="Software">Software</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="search-btn">
+            <span class="btn-text">Search</span>
+            <span class="btn-loader hidden">
+              <span class="spinner"></span>
+            </span>
+          </button>
+        </div>
+
+        <div id="search-results" class="product-grid">
+          <!-- Products will be rendered here -->
+          <div class="empty-state" id="search-empty">
+            <div class="empty-icon">🛒</div>
+            <h3>Start by searching for a product</h3>
+            <p>Enter keywords above to find Amazon products</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== GENERATE TAB ==================== -->
+      <section class="tab-content" id="tab-generate">
+        <div class="tab-header">
+          <h1>Generate Pinterest Image</h1>
+          <p class="tab-subtitle">Create a stunning pin image for your selected product</p>
+        </div>
+
+        <div id="generate-content" class="generate-layout">
+          <div class="empty-state" id="generate-empty">
+            <div class="empty-icon">🎨</div>
+            <h3>No product selected</h3>
+            <p>Go to the Search tab and select a product first</p>
+          </div>
+
+          <!-- Product Preview (hidden until product selected) -->
+          <div class="product-preview hidden" id="product-preview">
+            <div class="preview-card">
+              <div class="preview-image-wrapper">
+                <img id="preview-product-image" src="" alt="Product Image">
+              </div>
+              <div class="preview-details">
+                <h2 id="preview-title"></h2>
+                <p class="preview-brand" id="preview-brand"></p>
+                <div class="preview-price-row">
+                  <span class="preview-price" id="preview-price"></span>
+                  <span class="preview-original-price" id="preview-original-price"></span>
+                </div>
+                <div class="preview-features" id="preview-features"></div>
+                <div class="preview-link-row">
+                  <label>Affiliate Link:</label>
+                  <input type="text" id="preview-affiliate-link" readonly>
+                  <button class="btn btn-sm btn-ghost" id="copy-link-btn" title="Copy link">📋</button>
+                </div>
+                <button class="btn btn-primary btn-lg" id="generate-btn">
+                  <span class="btn-text">🎨 Generate Pinterest Image</span>
+                  <span class="btn-loader hidden"><span class="spinner"></span></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Generated Image Preview -->
+          <div class="generated-preview hidden" id="generated-preview">
+            <h3>Generated Pin Image</h3>
+            <div class="generated-image-wrapper">
+              <img id="generated-image" src="" alt="Generated Pin Image">
+            </div>
+            <div class="generated-actions">
+              <button class="btn btn-primary" id="proceed-to-post-btn">📌 Proceed to Post</button>
+              <button class="btn btn-ghost" id="regenerate-btn">🔄 Regenerate</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== POST TAB ==================== -->
+      <section class="tab-content" id="tab-post">
+        <div class="tab-header">
+          <h1>Post to Pinterest</h1>
+          <p class="tab-subtitle">Finalize and publish your pin</p>
+        </div>
+
+        <div id="post-content">
+          <div class="empty-state" id="post-empty">
+            <div class="empty-icon">📌</div>
+            <h3>No image generated yet</h3>
+            <p>Generate a Pinterest image first</p>
+          </div>
+
+          <div class="post-layout hidden" id="post-form-section">
+            <div class="post-preview">
+              <div class="post-image-wrapper">
+                <img id="post-preview-image" src="" alt="Pin Preview">
+              </div>
+            </div>
+            <div class="post-form">
+              <div class="form-group">
+                <label for="pin-title">Pin Title</label>
+                <input type="text" id="pin-title" placeholder="Enter a catchy title..." maxlength="100">
+                <span class="char-count"><span id="title-count">0</span>/100</span>
+              </div>
+              <div class="form-group">
+                <label for="pin-description">Pin Description</label>
+                <textarea id="pin-description" placeholder="Describe your product..." rows="4" maxlength="500"></textarea>
+                <span class="char-count"><span id="desc-count">0</span>/500</span>
+              </div>
+              <div class="form-group">
+                <label for="pin-link">Affiliate Link</label>
+                <input type="text" id="pin-link" placeholder="https://amazon.com/dp/..." readonly>
+              </div>
+              <div class="form-group">
+                <label for="pin-board">Pinterest Board</label>
+                <input type="text" id="pin-board" placeholder="Board name (optional)">
+              </div>
+
+              <button class="btn btn-primary btn-lg btn-post" id="post-btn">
+                <span class="btn-text">🚀 Post to Pinterest</span>
+                <span class="btn-loader hidden"><span class="spinner"></span></span>
+              </button>
+
+              <!-- Status Feed -->
+              <div class="status-feed hidden" id="status-feed">
+                <h3>Posting Progress</h3>
+                <div class="status-list" id="status-list">
+                  <!-- Status items will appear here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== AUTO MODE TAB ==================== -->
+      <section class="tab-content" id="tab-auto">
+        <div class="tab-header">
+          <h1>🤖 Auto Mode</h1>
+          <p class="tab-subtitle">Gemini AI discovers trending products, generates images &amp; posts — fully automated</p>
+        </div>
+
+        <div class="auto-layout">
+          <!-- Control Panel -->
+          <div class="auto-control-panel">
+            <div class="auto-panel-card">
+              <div class="auto-panel-header">
+                <div class="auto-mode-badges">
+                  <div class="ai-badge" id="auto-mode-badge">🔧 No API Required</div>
+                </div>
+                <h3>Configure Auto Pipeline</h3>
+                <p>Works fully without any API key. Add Gemini key in Settings for AI-powered images.</p>
+              </div>
+
+              <div class="form-group">
+                <label for="auto-niche">Product Niche</label>
+                <div class="niche-input-wrapper">
+                  <input type="text" id="auto-niche" placeholder="e.g. tech gadgets, home decor, fitness..." value="tech gadgets">
+                </div>
+                <div class="niche-chips">
+                  <button class="niche-chip" data-niche="tech gadgets">📱 Tech Gadgets</button>
+                  <button class="niche-chip" data-niche="home &amp; kitchen">🏠 Home &amp; Kitchen</button>
+                  <button class="niche-chip" data-niche="beauty &amp; skincare">💄 Beauty</button>
+                  <button class="niche-chip" data-niche="fitness &amp; sports">💪 Fitness</button>
+                  <button class="niche-chip" data-niche="pet products">🐾 Pet Care</button>
+                  <button class="niche-chip" data-niche="baby products">👶 Baby</button>
+                  <button class="niche-chip" data-niche="office supplies">💼 Office</button>
+                  <button class="niche-chip" data-niche="outdoor camping">⛺ Outdoor</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="auto-posts-count">
+                  Posts per Run: <span class="slider-value" id="auto-posts-value">3</span>
+                </label>
+                <input type="range" id="auto-posts-count" min="1" max="5" value="3" class="range-slider">
+                <div class="range-labels"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+              </div>
+
+              <button class="btn btn-auto btn-lg" id="auto-run-btn">
+                <span class="btn-text">🚀 Run Auto Pipeline</span>
+                <span class="btn-loader hidden"><span class="spinner"></span></span>
+              </button>
+
+              <div class="mode-info-row" id="auto-mode-info">
+                <span class="mode-info-icon">🔧</span>
+                <span class="mode-info-text">Running in <strong>No-API Mode</strong> — Best Sellers + Classic Images</span>
+              </div>
+
+              <button class="btn btn-ghost" id="auto-stop-btn" style="display:none; margin-top:8px;">
+                ⏹ Stop Pipeline
+              </button>
+            </div>
+
+            <!-- How it works -->
+            <div class="how-it-works">
+              <h4>How it works</h4>
+              <div class="pipeline-steps">
+                <div class="pipeline-step">
+                  <div class="pipeline-step-icon">🤖</div>
+                  <div class="pipeline-step-text">
+                    <strong>1. AI Discovery</strong>
+                    <span>Gemini finds trending product ideas</span>
+                  </div>
+                </div>
+                <div class="pipeline-arrow">↓</div>
+                <div class="pipeline-step">
+                  <div class="pipeline-step-icon">🛒</div>
+                  <div class="pipeline-step-text">
+                    <strong>2. Amazon Search</strong>
+                    <span>Auto-searches &amp; picks best product</span>
+                  </div>
+                </div>
+                <div class="pipeline-arrow">↓</div>
+                <div class="pipeline-step">
+                  <div class="pipeline-step-icon">🎨</div>
+                  <div class="pipeline-step-text">
+                    <strong>3. AI Image</strong>
+                    <span>Gemini generates unique pin image</span>
+                  </div>
+                </div>
+                <div class="pipeline-arrow">↓</div>
+                <div class="pipeline-step">
+                  <div class="pipeline-step-icon">📌</div>
+                  <div class="pipeline-step-text">
+                    <strong>4. Auto Post</strong>
+                    <span>Publishes to your Pinterest board</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Status Feed -->
+          <div class="auto-status-panel">
+            <div class="auto-status-header">
+              <h3>Live Pipeline Status</h3>
+              <div class="status-indicator" id="auto-status-dot"></div>
+            </div>
+            <div class="auto-status-feed" id="auto-status-feed">
+              <div class="auto-status-empty" id="auto-status-empty">
+                <div class="empty-icon">🤖</div>
+                <p>Pipeline not started yet</p>
+                <p class="hint">Configure your niche and click "Run Auto Pipeline"</p>
+              </div>
+              <div class="status-list" id="auto-status-list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SETTINGS TAB ==================== -->
+      <section class="tab-content" id="tab-settings">
+        <div class="tab-header">
+          <h1>Settings</h1>
+          <p class="tab-subtitle">Configure your API keys and credentials</p>
+        </div>
+
+        <div class="settings-layout">
+          <!-- Gemini AI Settings -->
+          <div class="settings-card settings-card-ai">
+            <div class="settings-card-header">
+              <div class="settings-card-icon">✨</div>
+              <div>
+                <h3>Gemini AI</h3>
+                <p>Google AI for product discovery &amp; image generation</p>
+              </div>
+              <div class="ai-badge" style="margin-left:auto">Free Tier</div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="gemini-api-key">Gemini API Key</label>
+                <div class="password-wrapper">
+                  <input type="password" id="gemini-api-key" placeholder="AIza...">
+                  <button class="toggle-password" data-target="gemini-api-key" type="button">👁️</button>
+                </div>
+                <div class="settings-notice">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <span>Get a free API key at <a href="https://aistudio.google.com" target="_blank" style="color:#7c3aed">aistudio.google.com</a></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="image-mode">Image Generation Mode</label>
+                <div class="mode-toggle" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+                  <button class="mode-btn active" id="mode-classic" data-mode="classic">🖼️ Classic</button>
+                  <button class="mode-btn" id="mode-ai" data-mode="ai">✨ Gemini API</button>
+                  <button class="mode-btn mode-btn-web" id="mode-gemini-web" data-mode="gemini-web">🌐 Gemini Web</button>
+                  <button class="mode-btn mode-btn-kie" id="mode-kie-ai" data-mode="kie-ai">🤖 Kie.ai</button>
+                </div>
+                <div class="mode-descriptions">
+                  <p class="mode-desc" id="desc-classic">Uses Sharp/SVG templates. Fast, no login required.</p>
+                  <p class="mode-desc hidden" id="desc-ai">Uses Gemini Flash API. Requires Gemini API key above.</p>
+                  <p class="mode-desc hidden" id="desc-gemini-web">🌐 Opens <strong>gemini.google.com</strong> in Chrome, sends your prompt, downloads the image — <strong>no API key needed!</strong></p>
+                  <p class="mode-desc hidden" id="desc-kie-ai">🤖 Uses <strong>Kie.ai Seedream</strong> model to generate high-quality AI Pinterest images. Requires your Kie.ai API key below.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kie.ai Settings -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon">🤖</div>
+              <div>
+                <h3>Kie.ai Image API</h3>
+                <p>High-quality AI image generation using Seedream model</p>
+              </div>
+              <div class="ai-badge" style="margin-left:auto; background: linear-gradient(135deg,#f59e0b,#ef4444);">Paid</div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="kie-ai-api-key">Kie.ai API Key</label>
+                <div class="password-wrapper">
+                  <input type="password" id="kie-ai-api-key" placeholder="kie-...">
+                  <button class="toggle-password" data-target="kie-ai-api-key" type="button">👁️</button>
+                </div>
+                <div class="settings-notice">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <span>Get your API key at <a href="https://kie.ai" target="_blank" style="color:#f59e0b">kie.ai</a>. Uses the Seedream 3.0 text-to-image model.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Amazon Settings -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon">🛒</div>
+              <div>
+                <h3>Amazon Associates</h3>
+                <p>Your affiliate tag for generating commission links</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="amazon-partner-tag">Associate Tag (Tracking ID)</label>
+                <input type="text" id="amazon-partner-tag" placeholder="yourname-20">
+              </div>
+              <div class="form-group">
+                <label for="amazon-marketplace">Marketplace</label>
+                <select id="amazon-marketplace">
+                  <option value="www.amazon.com">amazon.com (US)</option>
+                  <option value="www.amazon.co.uk">amazon.co.uk (UK)</option>
+                  <option value="www.amazon.de">amazon.de (DE)</option>
+                  <option value="www.amazon.fr">amazon.fr (FR)</option>
+                  <option value="www.amazon.in">amazon.in (IN)</option>
+                  <option value="www.amazon.co.jp">amazon.co.jp (JP)</option>
+                  <option value="www.amazon.ca">amazon.ca (CA)</option>
+                  <option value="www.amazon.com.au">amazon.com.au (AU)</option>
+                </select>
+              </div>
+              <div class="settings-notice">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>No API keys needed! Products are searched directly from Amazon. Just add your Associate Tag to earn commissions.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pinterest Settings -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon">📌</div>
+              <div>
+                <h3>Pinterest Account</h3>
+                <p>Login credentials for browser automation</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="pinterest-email">Email (Fallback)</label>
+                <input type="email" id="pinterest-email" placeholder="your@email.com">
+              </div>
+              <div class="form-group">
+                <label for="pinterest-password">Password (Fallback)</label>
+                <div class="password-wrapper">
+                  <input type="password" id="pinterest-password" placeholder="Your Pinterest password">
+                  <button class="toggle-password" data-target="pinterest-password" type="button">👁️</button>
+                </div>
+              </div>
+              <div class="form-group" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <label for="pinterest-session-cookie" style="color: #10b981;">Session Cookie (_pinterest_sess) — Recommended for Render</label>
+                <div class="password-wrapper">
+                  <input type="password" id="pinterest-session-cookie" placeholder="Paste your _pinterest_sess cookie here">
+                  <button class="toggle-password" data-target="pinterest-session-cookie" type="button">👁️</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="pinterest-board">Default Board</label>
+                <input type="text" id="pinterest-board" placeholder="Board name (optional)">
+              </div>
+              <div class="settings-notice">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>To bypass CAPTCHAs on Render, log into Pinterest on your browser, press F12 (Dev Tools) > Application > Cookies, copy the value of <b>_pinterest_sess</b>, and paste it above.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Image Settings -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon">🎨</div>
+              <div>
+                <h3>Image Customization</h3>
+                <p>Customize generated Pinterest images</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="image-gradient-start">Gradient Start</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="image-gradient-start" value="#7c3aed">
+                    <span class="color-value" id="gradient-start-value">#7c3aed</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="image-gradient-end">Gradient End</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="image-gradient-end" value="#06b6d4">
+                    <span class="color-value" id="gradient-end-value">#06b6d4</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="image-cta-text">CTA Button Text</label>
+                <input type="text" id="image-cta-text" placeholder="Shop Now on Amazon" value="Shop Now on Amazon">
+              </div>
+              <div class="form-row">
+                <div class="form-group checkbox-group">
+                  <label>
+                    <input type="checkbox" id="image-show-price" checked>
+                    <span class="checkmark"></span>
+                    Show Price Badge
+                  </label>
+                </div>
+                <div class="form-group checkbox-group">
+                  <label>
+                    <input type="checkbox" id="image-show-rating" checked>
+                    <span class="checkmark"></span>
+                    Show Rating
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backend Connection Settings -->
+          <div class="settings-card settings-card-backend">
+            <div class="settings-card-header">
+              <div class="settings-card-icon">🔗</div>
+              <div>
+                <h3>Backend Connection</h3>
+                <p>Connect to your Render.com backend server</p>
+              </div>
+              <div class="ai-badge" id="backend-status-badge" style="margin-left:auto; background: linear-gradient(135deg,rgba(16,185,129,0.2),rgba(5,150,105,0.2)); border-color:rgba(16,185,129,0.4); color:#10b981;">Not Set</div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="backend-url">Backend URL</label>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input type="url" id="backend-url" placeholder="https://your-app.onrender.com" style="flex:1;">
+                  <button class="btn btn-ghost" id="test-backend-btn" type="button" style="white-space:nowrap;flex-shrink:0;">
+                    <span class="btn-text">🔍 Test</span>
+                    <span class="btn-loader hidden"><span class="spinner"></span></span>
+                  </button>
+                </div>
+              </div>
+              <div class="settings-notice">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>Deploy the backend to <a href="https://render.com" target="_blank" style="color:#7c3aed">Render.com</a> (free), then paste the URL here. Leave empty when running locally on <code style="color:#06b6d4">localhost:3000</code>.</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-lg" id="save-settings-btn">
+            <span class="btn-text">💾 Save Settings</span>
+            <span class="btn-loader hidden"><span class="spinner"></span></span>
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
