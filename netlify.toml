@@ -1,0 +1,13 @@
+# Netlify configuration
+# Serves the contents of the /public folder as the site root
+
+[build]
+  publish = "public"
+
+# No build command needed — pure static files
+
+# SPA fallback: serve index.html for all routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

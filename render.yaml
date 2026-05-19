@@ -1,0 +1,18 @@
+# Render.com deployment configuration
+# Deploy this backend as a Web Service on https://render.com
+# Free tier available — service sleeps after 15 mins of inactivity
+
+services:
+  - type: web
+    name: pinterest-autopost-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install && npx puppeteer browsers install chrome
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: PUPPETEER_CACHE_DIR
+        value: /opt/render/project/puppeteer

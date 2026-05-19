@@ -1,0 +1,32 @@
+{
+  "amazon": {
+    "partnerTag": "store02921-21",
+    "marketplace": "www.amazon.in"
+  },
+  "pinterest": {
+    "email": "appodealapp74@gmail.com",
+    "password": "Test122@$",
+    "defaultBoard": ""
+  },
+  "image": {
+    "gradientStart": "#7c3aed",
+    "gradientEnd": "#06b6d4",
+    "ctaText": "Shop Now on Amazon",
+    "showPrice": true,
+    "showRating": true,
+    "mode": "kie-ai"
+  },
+  "gemini": {
+    "apiKey": "",
+    "model": "gemini-2.0-flash"
+  },
+  "kieAi": {
+    "apiKey": "289f0f81bb27ed83a05ffe4e26ade7c5",
+    "model": "seedream/text-to-image"
+  },
+  "autoMode": {
+    "niche": "tech gadgets",
+    "postsPerRun": 3,
+    "delayBetweenPosts": 30
+  }
+}
